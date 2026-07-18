@@ -34,3 +34,9 @@ yarn-error.log*
 
 # Prueba
 Prueba
+
+# AI agent tooling (not project source)
+.agents/
+.atl/
+skills-lock.json
+.codegraph/

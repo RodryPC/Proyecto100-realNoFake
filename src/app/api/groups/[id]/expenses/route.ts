@@ -90,51 +90,56 @@ export async function POST(
     );
   }
 
-  const { description, amount, paidById, splitAmong, date } = parsed.data;
+   const { description, amount, paidById, splitAmong, date } = parsed.data;
 
-  const isPayerInGroup = group.members.some((m) => m.userId === paidById);
-  if (!isPayerInGroup) {
-    return NextResponse.json(
-      { error: "El pagador no es miembro del grupo" },
-      { status: 400 }
-    );
-  }
+   const isPayerInGroup = group.members.some((m) => m.userId === paidById);
+   if (!isPayerInGroup) {
+     return NextResponse.json(
+       { error: "El pagador no es miembro del grupo" },
+       { status: 400 }
+     );
+   }
 
-  const allParticipantsValid = splitAmong.every((pid) =>
-    group.members.some((m) => m.userId === pid)
-  );
-  if (!allParticipantsValid) {
-    return NextResponse.json(
-      { error: "Algún participante no es miembro del grupo" },
-      { status: 400 }
-    );
-  }
+   const allParticipantsValid = splitAmong.every((pid) =>
+     group.members.some((m) => m.userId === pid)
+   );
+   if (!allParticipantsValid) {
+     return NextResponse.json(
+       { error: "Algún participante no es miembro del grupo" },
+       { status: 400 }
+     );
+   }
 
-  const shareAmount = amount / splitAmong.length;
+   const amountCents = Math.round(amount * 100);
+   const totalCents = amountCents;
+   const n = splitAmong.length;
+   const base = Math.floor(totalCents / n);
+   const remainder = totalCents % n;
+   const shares = splitAmong.map((participantId, i) => ({
+     userId: participantId,
+     amount: base + (i < remainder ? 1 : 0),
+   }));
 
-  const expense = await prisma.expense.create({
-    data: {
-      description,
-      amount,
-      date: date ? new Date(date) : new Date(),
-      paidById,
-      groupId: id,
-      shares: {
-        create: splitAmong.map((participantId) => ({
-          userId: participantId,
-          amount: shareAmount,
-        })),
-      },
-    },
-    include: {
-      paidBy: { select: { id: true, name: true, email: true } },
-      shares: {
-        include: {
-          user: { select: { id: true, name: true, email: true } },
-        },
-      },
-    },
-  });
+   const expense = await prisma.expense.create({
+     data: {
+       description,
+       amount: amountCents,
+       date: date ? new Date(date) : new Date(),
+       paidById,
+       groupId: id,
+       shares: {
+         create: shares,
+       },
+     },
+     include: {
+       paidBy: { select: { id: true, name: true, email: true } },
+       shares: {
+         include: {
+           user: { select: { id: true, name: true, email: true } },
+         },
+       },
+     },
+   });
 
   return NextResponse.json(expense, { status: 201 });
 }

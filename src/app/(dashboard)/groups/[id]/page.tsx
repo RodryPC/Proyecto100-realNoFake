@@ -67,43 +67,42 @@ export default async function GroupDetailPage({ params }: Props) {
     }
   }
 
-  for (const balance of balancesMap.values()) {
-    balance.balance = Math.round((balance.paid - balance.spent) * 100) / 100;
-  }
+   for (const balance of balancesMap.values()) {
+     balance.balance = balance.paid - balance.spent;
+   }
 
-  const balances = Array.from(balancesMap.values());
+   const balances = Array.from(balancesMap.values());
 
-  const creditors = balances
-    .filter((b) => b.balance > 0.01)
-    .sort((a, b) => b.balance - a.balance);
-  const debtors = balances
-    .filter((b) => b.balance < -0.01)
-    .sort((a, b) => a.balance - b.balance);
+   const creditors = balances
+     .filter((b) => b.balance > 1)
+     .sort((a, b) => b.balance - a.balance);
+   const debtors = balances
+     .filter((b) => b.balance < -1)
+     .sort((a, b) => a.balance - b.balance);
 
-  const settlements: Settlement[] = [];
-  let ci = 0;
-  let di = 0;
+   const settlements: Settlement[] = [];
+   let ci = 0;
+   let di = 0;
 
-  while (ci < creditors.length && di < debtors.length) {
-    const creditor = creditors[ci];
-    const debtor = debtors[di];
-    const amount = Math.min(creditor.balance, Math.abs(debtor.balance));
-    const rounded = Math.round(amount * 100) / 100;
+   while (ci < creditors.length && di < debtors.length) {
+     const creditor = creditors[ci];
+     const debtor = debtors[di];
+     const amount = Math.min(creditor.balance, Math.abs(debtor.balance));
 
-    if (rounded > 0) {
-      settlements.push({
-        from: debtor.user,
-        to: creditor.user,
-        amount: rounded,
-      });
-    }
+     if (amount > 0) {
+       settlements.push({
+         from: debtor.user,
+         to: creditor.user,
+         amount: amount,
+       });
+     }
 
-    creditor.balance -= rounded;
-    debtor.balance += rounded;
+     creditor.balance -= amount;
+     debtor.balance += amount;
 
-    if (creditor.balance < 0.01) ci++;
-    if (Math.abs(debtor.balance) < 0.01) di++;
-  }
+     if (creditor.balance <= 1) ci++;
+     if (Math.abs(debtor.balance) <= 1) di++;
+   }
 
   return (
     <div>

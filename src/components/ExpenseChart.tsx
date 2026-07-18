@@ -28,7 +28,7 @@ interface ExpenseChartProps {
 export default function ExpenseChart({ balances }: ExpenseChartProps) {
   const data = balances.map((b) => ({
     name: b.user.name,
-    value: Math.round(b.spent * 100) / 100,
+    value: b.spent / 100,
   }));
 
   const totalSpent = data.reduce((acc, d) => acc + d.value, 0);
@@ -66,7 +66,7 @@ export default function ExpenseChart({ balances }: ExpenseChartProps) {
             ))}
           </Pie>
           <Tooltip
-            formatter={(value: number) => `$${value.toFixed(2)}`}
+            formatter={(value: number) => `$${(value).toFixed(2)}`}
           />
           <Legend />
         </PieChart>

@@ -30,26 +30,26 @@ export default function SettleUpTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {balances.map((b) => (
-              <tr key={b.user.id}>
-                <td className="px-4 py-3 font-medium text-gray-900">
-                  {b.user.name}
-                </td>
-                <td className="px-4 py-3 text-right text-gray-700">
-                  ${b.paid.toFixed(2)}
-                </td>
-                <td className="px-4 py-3 text-right text-gray-700">
-                  ${b.spent.toFixed(2)}
-                </td>
-                <td
-                  className={`px-4 py-3 text-right font-medium ${
-                    b.balance >= 0 ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {b.balance >= 0 ? "+" : ""}${b.balance.toFixed(2)}
-                </td>
-              </tr>
-            ))}
+             {balances.map((b) => (
+               <tr key={b.user.id}>
+                 <td className="px-4 py-3 font-medium text-gray-900">
+                   {b.user.name}
+                 </td>
+                 <td className="px-4 py-3 text-right text-gray-700">
+                   ${(b.paid / 100).toFixed(2)}
+                 </td>
+                 <td className="px-4 py-3 text-right text-gray-700">
+                   ${(b.spent / 100).toFixed(2)}
+                 </td>
+                 <td
+                   className={`px-4 py-3 text-right font-medium ${
+                     b.balance >= 0 ? "text-green-600" : "text-red-600"
+                   }`}
+                 >
+                   {b.balance >= 0 ? "+" : ""}${(b.balance / 100).toFixed(2)}
+                 </td>
+               </tr>
+             ))}
           </tbody>
         </table>
       </div>
@@ -59,22 +59,22 @@ export default function SettleUpTable({
           <h3 className="mb-3 text-sm font-semibold text-gray-900">
             Liquidaciones
           </h3>
-          <div className="space-y-2">
-            {settlements.map((s, i) => (
-              <div
-                key={i}
-                className="rounded-lg bg-gray-50 px-4 py-3 text-sm"
-              >
-                <span className="font-medium text-red-600">{s.from.name}</span>{" "}
-                debe pagar{" "}
-                <span className="font-bold text-gray-900">
-                  ${s.amount.toFixed(2)}
-                </span>{" "}
-                a{" "}
-                <span className="font-medium text-green-600">{s.to.name}</span>
-              </div>
-            ))}
-          </div>
+           <div className="space-y-2">
+             {settlements.map((s, i) => (
+               <div
+                 key={i}
+                 className="rounded-lg bg-gray-50 px-4 py-3 text-sm"
+               >
+                 <span className="font-medium text-red-600">{s.from.name}</span>{" "}
+                 debe pagar{" "}
+                 <span className="font-bold text-gray-900">
+                   ${(s.amount / 100).toFixed(2)}
+                 </span>{" "}
+                 a{" "}
+                 <span className="font-medium text-green-600">{s.to.name}</span>
+               </div>
+             ))}
+           </div>
         </div>
       )}
 

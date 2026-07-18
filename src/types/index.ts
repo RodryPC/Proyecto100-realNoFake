@@ -16,25 +16,25 @@ export interface GroupWithMembers {
 
 export interface ExpenseWithDetails {
   id: string;
-  amount: number;
+  amount: number; // stored as integer cents
   description: string;
   date: Date;
   paidBy: UserProfile;
   shares: {
     user: UserProfile;
-    amount: number;
+    amount: number; // stored as integer cents
   }[];
 }
 
 export interface Balance {
   user: UserProfile;
-  paid: number;
-  spent: number;
-  balance: number;
+  paid: number; // stored as integer cents
+  spent: number; // stored as integer cents
+  balance: number; // stored as integer cents
 }
 
 export interface Settlement {
   from: UserProfile;
   to: UserProfile;
-  amount: number;
+  amount: number; // stored as integer cents
 }

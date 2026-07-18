@@ -39,7 +39,7 @@ RUN LAZYGIT_VERSION="0.44.1" \
 # 5. OpenCode: el instalador oficial coloca el binario en $HOME/.opencode/bin
 RUN mkdir -p /home/vscode/.opencode/bin \
     && chown -R vscode:vscode /home/vscode/.opencode/bin \
-    && HOME=/home/vscode /bin/su -s /bin/bash vscode -c 'curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path' \
+    &J& HOME=/home/vscode /bin/su -s /bin/bash vscode -c 'curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path' \
     && ln -sf /home/vscode/.opencode/bin/opencode /usr/local/bin/opencode
 
 # 6. Entorno Python para pgcli, como usuario vscode
